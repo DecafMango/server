@@ -25,7 +25,6 @@ public class Server {
         server = startServer();
         CollectionManager.initCollection();
 
-        new StopThread().start();
         while (true) {
             ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
             SocketAddress clientAddress = server.receive(buffer);
@@ -40,7 +39,7 @@ public class Server {
                 continue;
             }
 
-            new ClientThread(clientRequest, clientAddress).start();
+            workWithClientRequest(clientRequest, clientAddress);
         }
 
     }
@@ -53,46 +52,17 @@ public class Server {
         return server;
     }
 
-    private static class StopThread extends Thread {
-        @Override
-        public void run() {
-            while (true) {
-                Scanner scanner = new Scanner(System.in);
-                String answer = scanner.nextLine().trim();
 
-                if (answer.equals("stop")) {
-                    System.out.println("Отключение сервера.");
-                    System.exit(0);
-                }
-            }
+    private static void workWithClientRequest(Request clientRequest, SocketAddress clientAddress) {
+        try {
+            CommandResult commandResult = CommandManager.execute(clientRequest.getCommandName(),
+                    clientRequest.getSerializedArgument());
+            byte[] outputBuffer = ObjectSerializer.serializeObject(commandResult);
+            DatagramPacket outputPacket = new DatagramPacket(outputBuffer, outputBuffer.length, clientAddress);
+            server.socket().send(outputPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private static class ClientThread extends Thread {
-
-        private final Request clientRequest;
-        private final SocketAddress clientAddress;
-        public ClientThread(Request clientRequest, SocketAddress clientAddress) {
-            this.clientRequest = clientRequest;
-            this.clientAddress = clientAddress;
-        }
-
-        @Override
-        public void run() {
-            workWithClientRequest();
-
-        }
-
-        private void workWithClientRequest()  {
-            try {
-                CommandResult commandResult = CommandManager.execute(clientRequest.getCommandName(),
-                        clientRequest.getSerializedArgument());
-                byte[] outputBuffer = ObjectSerializer.serializeObject(commandResult);
-                DatagramPacket outputPacket = new DatagramPacket(outputBuffer, outputBuffer.length, clientAddress);
-                server.socket().send(outputPacket);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
