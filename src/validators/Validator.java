@@ -1,4 +1,4 @@
-package parser.validators;
+package validators;
 
 /**
  * Для проверки корректности ввода значений полей объектов созданы валидаторы

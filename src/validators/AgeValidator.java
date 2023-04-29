@@ -1,4 +1,4 @@
-package parser.validators;
+package validators;
 
 public class AgeValidator extends Validator {
 

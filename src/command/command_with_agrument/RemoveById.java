@@ -1,7 +1,7 @@
 package command.command_with_agrument;
 
 import collection.CollectionManager;
-import command.CommandResult;
+import command.Response;
 import command.CommandWithArgument;
 import dragon.Dragon;
 
@@ -12,17 +12,19 @@ public final class RemoveById extends CommandWithArgument {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         int id = Integer.parseInt((String) getArgument());
 
         if (CollectionManager.getCollection().isEmpty())
-            return new CommandResult("Текущая коллекция пустая.");
+            return new Response("Коллекция пустая");
         for (Dragon dragon : CollectionManager.getCollection()) {
             if (dragon.getId() == id) {
-                CollectionManager.removeElement(dragon);
-                return new CommandResult("Элемент с id=" + id + " успешно удален из текущей коллекции.");
+                if (CollectionManager.removeElement(dragon))
+                    return new Response("Элемент с id=" + id + " успешно удален из коллекции");
+                else
+                    return new Response("Элемент с id=" + id + " не был удален из коллекции");
             }
         }
-        return new CommandResult("Элемента с id=" + id + " нет в текущей коллекции.");
+        return new Response("Элемента с id=" + id + " нет в коллекции");
     }
 }

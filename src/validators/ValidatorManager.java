@@ -1,4 +1,4 @@
-package parser.validators;
+package validators;
 
 import java.util.HashMap;
 

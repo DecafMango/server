@@ -2,7 +2,7 @@ package command.command_without_argument;
 
 import collection.CollectionManager;
 import command.Command;
-import command.CommandResult;
+import command.Response;
 import dragon.Dragon;
 
 public final class SumOfAge extends Command {
@@ -12,16 +12,16 @@ public final class SumOfAge extends Command {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         long sum = 0;
 
         if (!CollectionManager.getCollection().isEmpty()) {
             for (Dragon dragon : CollectionManager.getCollection()) {
                 sum += dragon.getAge();
             }
-            return new CommandResult("Суммарный возраст всех элементов текущей коллекции составляет: " + sum);
+            return new Response("Суммарный возраст всех элементов текущей коллекции составляет: " + sum);
         } else {
-            return new CommandResult("Текущая коллекция пустая.");
+            return new Response("Коллекция пустая");
         }
     }
 }

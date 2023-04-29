@@ -1,7 +1,7 @@
 package command.command_with_agrument;
 
 import collection.CollectionManager;
-import command.CommandResult;
+import command.Response;
 import command.CommandWithArgument;
 
 public final class RemoveAtIndex extends CommandWithArgument {
@@ -11,16 +11,18 @@ public final class RemoveAtIndex extends CommandWithArgument {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         int index = Integer.parseInt((String) getArgument());
 
         if (CollectionManager.getCollection().isEmpty())
-            return new CommandResult("Текущая коллекция пустая.");
+            return new Response("Коллекция пустая.");
         if (index >= 0 && index < CollectionManager.getCollection().size()) {
-            CollectionManager.removeElementByindex(index);
-            return new CommandResult("Элемент с индексом=" + index + " успешно удален из текущей коллекции.");
+            if (CollectionManager.removeElementByindex(index))
+                return new Response("Элемент с индексом=" + index + " успешно удален из коллекции");
+            else
+                return new Response("Элемент с индексом=" + index + " не был удален из коллекции");
         } else {
-            return new CommandResult("Элемента с индексом " + index + " нет в текущей коллекции.");
+            return new Response("Элемента с индексом " + index + " нет в коллекции");
         }
     }
 }

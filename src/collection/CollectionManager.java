@@ -1,7 +1,7 @@
 package collection;
 
 import dragon.Dragon;
-import parser.JsonParser;
+import server.DatabaseManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,67 +11,63 @@ import java.util.stream.Stream;
 
 public final class CollectionManager {
 
-    private static ArrayList<Dragon> collection;
+    private static List<Dragon> dragons;
     private static  LocalDate creationDate;
 
-    private static final String filePath = System.getenv("FILEPATH");
-
     public static void initCollection() {
-        if (filePath == null) {
-            System.out.println("Переменной окружения FILEPATH не существует!");
-            System.exit(0);
-        }
-
-        String[] splitedFilePath = filePath.strip().split(" ");
-
-        if (splitedFilePath.length != 1) {
-            System.out.println("Требуется ввести один аргумент - ссылку на файл формата json!");
-            System.exit(0);
-        }
-
-        collection = JsonParser.read(splitedFilePath[0]);
+        dragons = DatabaseManager.getDragons();
         creationDate = LocalDate.now();
-        System.out.println("Коллекция инициализирована. Было успешно добавлено объектов: " + collection.size());
+        System.out.println("База драконов инициализирована. Количество драконов: " + dragons.size());
     }
 
-    public static void save() {
-        JsonParser.write(filePath, collection);
-    }
 
     public static List<Dragon> getCollection() {
-        Stream stream = collection.stream();
+        Stream<Dragon> stream = dragons.stream();
         return (List<Dragon>) stream.collect(Collectors.toList());
     }
 
-    public static void addElement(Dragon dragon) {
-        collection.add(dragon);
-        collection.sort(new DragonComparator());
-        save();
-        System.out.println("Добавлен объект. Кол-во объектов: " + collection.size() + ".");
+    public static boolean addElement(Dragon dragon) {
+        if (DatabaseManager.insertNewDragon(dragon)) {
+            dragons.add(dragon);
+            dragons.sort(new DragonComparator());
+            System.out.println("Добавлен дракон. Кол-во драконов: " + dragons.size() + ".");
+            return true;
+        }
+        return false;
+
     }
-    public static void removeElement(Dragon dragon) {
-        Stream stream = collection.stream();
-        collection = (ArrayList<Dragon>)  stream.filter(x -> !x.equals(dragon)).collect(Collectors.toList());
-        collection.sort(new DragonComparator());
-        save();
-        System.out.println("Удален объект. Кол-во объектов: " + collection.size() + ".");
+    public static boolean removeElement(Dragon dragon) {
+        if (DatabaseManager.deleteDragon(dragon)) {
+            Stream stream = dragons.stream();
+            dragons = (ArrayList<Dragon>) stream.filter(x -> !x.equals(dragon)).collect(Collectors.toList());
+            dragons.sort(new DragonComparator());
+            System.out.println("Удален дракон. Кол-во драконов: " + dragons.size() + ".");
+            return true;
+        }
+        return false;
     }
 
-    public static void removeElementByindex(int index) {
-        collection.remove(index);
-        save();
-        System.out.println("Удален объект. Кол-во объектов: " + collection.size() + ".");
+    public static boolean removeElementByindex(int index) {
+        Dragon dragon = dragons.get(index);
+        if (DatabaseManager.deleteDragon(dragon)) {
+            dragons.remove(index);
+            System.out.println("Удален дракон. Кол-во драконов: " + dragons.size() + ".");
+            return true;
+        }
+        return false;
     }
-    public static void clear() {
-        Stream stream = collection.stream();
-        collection = (ArrayList<Dragon>) stream.skip(collection.size()).collect(Collectors.toList());
-        save();
-        System.out.println("Коллекция очищена.");
+    public static boolean clear() {
+        if (DatabaseManager.truncateDragons()) {
+            Stream<? extends Object> stream = dragons.stream();
+            dragons = (ArrayList<Dragon>) stream.skip(dragons.size()).collect(Collectors.toList());
+            System.out.println("Коллекция очищена.");
+            return true;
+        }
+        return false;
     }
 
     public static LocalDate getCreationDate() {
         return creationDate;
     }
-
 
 }

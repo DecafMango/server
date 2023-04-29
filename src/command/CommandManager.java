@@ -1,8 +1,6 @@
 package command;
 
-import command.command_with_agrument.RemoveAnyByType;
-import command.command_with_agrument.RemoveAtIndex;
-import command.command_with_agrument.RemoveById;
+import command.command_with_agrument.*;
 import command.command_with_creation.Add;
 import command.command_with_creation.AddIfMax;
 import command.command_with_creation.RemoveGreater;
@@ -21,7 +19,10 @@ public final class CommandManager {
     static {
         commands = new HashMap<>();
 
-        commands.put("start", new Start());
+        commands.put("login", new LogIn());
+        commands.put("logout", new LogOut());
+        commands.put("register", new Register());
+        commands.put("update", new Update());
         commands.put("clear", new Clear());
         commands.put("info", new Info());
         commands.put("help", new Help());
@@ -39,13 +40,11 @@ public final class CommandManager {
 
     private CommandManager() {}
 
-    public static CommandResult execute(String commandName, byte[] argument) {
+    public static Response execute(String commandName, byte[] argument) {
         if (!commands.containsKey(commandName))
-            return new CommandResult("Команды " + commandName + " не существует.\n" +
+            return new Response("Команды " + commandName + " не существует.\n" +
                     "Для ознакомления со списком доступных команд воспользуйтесь командой help");
 
-        if (commandName.equals("start"))
-            return new CommandResult(getCommandMeta());
 
         Command command = commands.get(commandName);
         if (command instanceof CommandWithCreation) {

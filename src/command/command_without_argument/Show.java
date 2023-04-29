@@ -2,7 +2,7 @@ package command.command_without_argument;
 
 import collection.CollectionManager;
 import command.Command;
-import command.CommandResult;
+import command.Response;
 
 public final class Show extends Command {
 
@@ -11,9 +11,9 @@ public final class Show extends Command {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         if (CollectionManager.getCollection().isEmpty()) {
-            return new CommandResult("Текущая коллекция пустая.");
+            return new Response("Коллекция пустая");
         } else {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < CollectionManager.getCollection().size(); i++) {
@@ -22,7 +22,7 @@ public final class Show extends Command {
                 else
                     sb.append("\n" + CollectionManager.getCollection().get(i));
             }
-            return new CommandResult(sb.toString());
+            return new Response(sb.toString());
         }
     }
 }

@@ -10,7 +10,7 @@ public abstract class Command {
         this.commandDefiniton = commandDefiniton;
     }
 
-    public abstract CommandResult execute();
+    public abstract Response execute();
 
     public String getCommandName() {
         return commandName;

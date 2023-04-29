@@ -2,7 +2,7 @@ package command.command_without_argument;
 
 import collection.CollectionManager;
 import command.Command;
-import command.CommandResult;
+import command.Response;
 
 public final class Clear extends Command {
 
@@ -10,12 +10,15 @@ public final class Clear extends Command {
         super("clear", "очистить коллекцию");
     }
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         if (CollectionManager.getCollection().isEmpty()) {
-            return new CommandResult("Текущая коллекция и так пустая.");
+            return new Response("Коллекция пустая");
         } else {
-            CollectionManager.clear();
-            return new CommandResult("Коллекция очищена.");
+            if (CollectionManager.clear())
+                return new Response("Коллекция очищена");
+            else {
+                return new Response("Произошла ошибка при очистке коллекции");
+            }
         }
 
     }

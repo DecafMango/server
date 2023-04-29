@@ -14,7 +14,7 @@ public abstract class CommandWithCreation extends Command {
         super(commandName, commandDefinition);
     }
 
-    public void addDragon() {
+    public boolean addDragon() {
         String name = (String) dragonCharacteristics.get("name");
         Coordinates coordinates = (Coordinates) dragonCharacteristics.get("coordinates");
         LocalDate creationDate = (LocalDate) dragonCharacteristics.get("creationDate");
@@ -25,7 +25,7 @@ public abstract class CommandWithCreation extends Command {
         DragonCave cave = (DragonCave) dragonCharacteristics.get("cave");
 
         Dragon dragon = new Dragon(name, coordinates, creationDate, age, color, type, character, cave);
-        CollectionManager.addElement(dragon);
+        return CollectionManager.addElement(dragon);
     }
 
     public void setDragonCharacteristics(Map<String, Object> dragonCharacteristics) {

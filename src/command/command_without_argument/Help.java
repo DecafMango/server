@@ -2,7 +2,7 @@ package command.command_without_argument;
 
 import command.Command;
 import command.CommandManager;
-import command.CommandResult;
+import command.Response;
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ public final class Help extends Command {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         Collection<Command> commands = CommandManager.getCommands().values();
         StringBuilder sb = new StringBuilder();
         int count = 0;
@@ -24,6 +24,6 @@ public final class Help extends Command {
                 sb.append("execute_script : выполнить скрипт по указанному файлу");
 
         }
-        return new CommandResult(sb.toString());
+        return new Response(sb.toString());
     }
 }

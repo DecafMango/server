@@ -1,7 +1,7 @@
 package command.command_with_agrument;
 
 import collection.CollectionManager;
-import command.CommandResult;
+import command.Response;
 import command.CommandWithArgument;
 import dragon.Dragon;
 import dragon.DragonType;
@@ -15,7 +15,7 @@ public final class RemoveAnyByType extends CommandWithArgument {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         String argument = (String) getArgument();
         ArrayList<String> types = new ArrayList<>();
 
@@ -23,15 +23,15 @@ public final class RemoveAnyByType extends CommandWithArgument {
             types.add(type.toString());
         }
         if (!types.contains(argument)) {
-            StringBuilder sb = new StringBuilder("Типа " + argument + " не существует. " +
+            StringBuilder sb = new StringBuilder("Типа " + argument + " не существует " +
                     "Требуется ввести один из следующего списка:");
             for (String type : types)
                 sb.append("\n" + type);
-            return new CommandResult(sb.toString());
+            return new Response(sb.toString());
         }
 
         if (CollectionManager.getCollection().isEmpty()) {
-            return new CommandResult("Текущая коллекция пустая.");
+            return new Response("Коллекция пустая");
         }
 
         ArrayList<Dragon> toDelete = new ArrayList<>();
@@ -41,9 +41,11 @@ public final class RemoveAnyByType extends CommandWithArgument {
                 toDelete.add(dragon);
             }
         }
+        int counter = 0;
         for (Dragon dragon : toDelete) {
-            CollectionManager.removeElement(dragon);
+            if (CollectionManager.removeElement(dragon))
+                counter++;
         }
-        return new CommandResult("Было успешно удалено элементов из текущей коллекции: " + toDelete.size());
+        return new Response("Было успешно удалено элементов из коллекции: " + counter);
     }
 }

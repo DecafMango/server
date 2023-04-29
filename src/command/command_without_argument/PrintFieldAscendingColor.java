@@ -2,7 +2,7 @@ package command.command_without_argument;
 
 import collection.CollectionManager;
 import command.Command;
-import command.CommandResult;
+import command.Response;
 
 public final class PrintFieldAscendingColor extends Command {
 
@@ -11,9 +11,9 @@ public final class PrintFieldAscendingColor extends Command {
     }
 
     @Override
-    public CommandResult execute() {
+    public Response execute() {
         if (CollectionManager.getCollection().isEmpty())
-            return new CommandResult("Текущая коллекция пустая.");
+            return new Response("Коллекция пустая");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < CollectionManager.getCollection().size(); i++) {
             if (i == 0)
@@ -21,6 +21,6 @@ public final class PrintFieldAscendingColor extends Command {
             else
                 sb.append("\n" + CollectionManager.getCollection().get(i).getColor());
         }
-        return new CommandResult(sb.toString());
+        return new Response(sb.toString());
     }
 }
