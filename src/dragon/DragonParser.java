@@ -12,15 +12,16 @@ public final class DragonParser {
         List<Dragon> dragons = new ArrayList<>();
         try {
             while (dragonRows.next()) {
-                int id = dragonRows.getInt("id");
+                int id = dragonRows.getInt("dragon_id");
                 String name = dragonRows.getString("dragon_name");
                 float x = dragonRows.getFloat("dragon_x");
                 Integer y = dragonRows.getInt("dragon_y");
                 Coordinates coordinates = new Coordinates(x, y);
-                LocalDate creationDate = LocalDate.parse(dragonRows.getString("dragon_creationDate"));
+                LocalDate creationDate = LocalDate.parse(dragonRows.getString("dragon_creationdate"));
                 Long age = dragonRows.getLong("dragon_age");
                 Color color = Color.valueOf(dragonRows.getString("dragon_color"));
                 DragonType type = DragonType.valueOf(dragonRows.getString("dragon_type"));
+                String owner = dragonRows.getString("dragon_owner");
 
                 //Костыль! /TODO Позже исправить это
                 DragonCharacter character = null;
@@ -34,7 +35,7 @@ public final class DragonParser {
                     cave = new DragonCave(depth);
                 } catch (SQLException e) {}
 
-                Dragon dragon = new Dragon(name, coordinates, creationDate, age, color, type, character, cave);
+                Dragon dragon = new Dragon(name, coordinates, creationDate, age, color, type, character, cave, owner);
                 dragon.setId(id);
                 dragons.add(dragon);
             }

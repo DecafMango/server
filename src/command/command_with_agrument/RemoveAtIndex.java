@@ -17,10 +17,14 @@ public final class RemoveAtIndex extends CommandWithArgument {
         if (CollectionManager.getCollection().isEmpty())
             return new Response("Коллекция пустая.");
         if (index >= 0 && index < CollectionManager.getCollection().size()) {
-            if (CollectionManager.removeElementByindex(index))
-                return new Response("Элемент с индексом=" + index + " успешно удален из коллекции");
-            else
-                return new Response("Элемент с индексом=" + index + " не был удален из коллекции");
+            if (CollectionManager.getCollection().get(index).getOwner().equals(getLogin())) {
+                if (CollectionManager.removeElementByindex(index))
+                    return new Response("Элемент с индексом=" + index + " успешно удален из коллекции");
+                else
+                    return new Response("Элемент с индексом=" + index + " не был удален из коллекции");
+            } else {
+                return new Response(getLogin() + " не является владельцем элемента с индексом=" + index);
+            }
         } else {
             return new Response("Элемента с индексом " + index + " нет в коллекции");
         }

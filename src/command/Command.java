@@ -2,6 +2,7 @@ package command;
 
 public abstract class Command {
 
+    private String login;
     private String commandName;
     private String commandDefiniton;
 
@@ -11,6 +12,14 @@ public abstract class Command {
     }
 
     public abstract Response execute();
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     public String getCommandName() {
         return commandName;

@@ -19,10 +19,13 @@ public final class RemoveById extends CommandWithArgument {
             return new Response("Коллекция пустая");
         for (Dragon dragon : CollectionManager.getCollection()) {
             if (dragon.getId() == id) {
-                if (CollectionManager.removeElement(dragon))
-                    return new Response("Элемент с id=" + id + " успешно удален из коллекции");
-                else
-                    return new Response("Элемент с id=" + id + " не был удален из коллекции");
+                if (dragon.getOwner().equals(getLogin())) {
+                    if (CollectionManager.removeElement(dragon))
+                        return new Response("Элемент с id=" + id + " успешно удален из коллекции");
+                    else
+                        return new Response("Элемент с id=" + id + " не был удален из коллекции");
+                } else
+                    return new Response(getLogin() + " не является владельцем элемента с id=" + id);
             }
         }
         return new Response("Элемента с id=" + id + " нет в коллекции");

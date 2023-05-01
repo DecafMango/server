@@ -37,7 +37,7 @@ public final class RemoveAnyByType extends CommandWithArgument {
         ArrayList<Dragon> toDelete = new ArrayList<>();
 
         for (Dragon dragon : CollectionManager.getCollection()) {
-            if (dragon.getType().toString().equals(argument)) {
+            if (dragon.getType().toString().equals(argument) && dragon.getOwner().equals(getLogin())) {
                 toDelete.add(dragon);
             }
         }

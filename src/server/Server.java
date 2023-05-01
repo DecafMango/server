@@ -2,11 +2,9 @@ package server;
 
 import collection.CollectionManager;
 import command.CommandManager;
-import command.Response;
 import command.Request;
-import dragon.*;
+import command.Response;
 
-import javax.xml.crypto.Data;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,9 +12,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Map;
 
 public class Server {
@@ -41,7 +36,7 @@ public class Server {
             server.bind(serverAddress);
             System.out.println("Сервер запущен: " + serverAddress);
             DatabaseManager.getConnection("jdbc:postgresql://localhost:5432/decafmango");
-            clients = DatabaseManager.getClients();
+            DatabaseManager.updateClients();
             CollectionManager.initCollection();
         } catch (IOException e) {
             System.out.println("Возникла ошибка при запуске сервера");
@@ -68,7 +63,7 @@ public class Server {
     }
 
     private static void handleRequest(Request request, SocketAddress clientAddress) {
-        Response response = CommandManager.execute(request.getCommandName(), request.getSerializedArgument());
+        Response response = CommandManager.execute(request.getCommandName(), request.getSerializedArgument(), request.getLogin());
         sendResponse(response, clientAddress);
     }
 
@@ -85,5 +80,9 @@ public class Server {
 
     public static Map<String, String> getClients() {
         return clients;
+    }
+
+    public static void setClients(Map<String, String> clients) {
+        Server.clients = clients;
     }
 }

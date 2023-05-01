@@ -23,8 +23,9 @@ public abstract class CommandWithCreation extends Command {
         DragonType type = (DragonType) dragonCharacteristics.get("type");
         DragonCharacter character = (DragonCharacter) dragonCharacteristics.get("character");
         DragonCave cave = (DragonCave) dragonCharacteristics.get("cave");
+        String owner = (String) dragonCharacteristics.get("owner");
 
-        Dragon dragon = new Dragon(name, coordinates, creationDate, age, color, type, character, cave);
+        Dragon dragon = new Dragon(name, coordinates, creationDate, age, color, type, character, cave, owner);
         return CollectionManager.addElement(dragon);
     }
 

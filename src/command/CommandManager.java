@@ -40,13 +40,14 @@ public final class CommandManager {
 
     private CommandManager() {}
 
-    public static Response execute(String commandName, byte[] argument) {
+    public static Response execute(String commandName, byte[] argument, String login) {
         if (!commands.containsKey(commandName))
             return new Response("Команды " + commandName + " не существует.\n" +
                     "Для ознакомления со списком доступных команд воспользуйтесь командой help");
 
 
         Command command = commands.get(commandName);
+        command.setLogin(login);
         if (command instanceof CommandWithCreation) {
             ((CommandWithCreation) command).setDragonCharacteristics((Map<String, Object>) deserializeObject(argument));
             return command.execute();
