@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 
 public final class CollectionManager {
 
-    private static List<Dragon> dragons;
-    private static  LocalDate creationDate;
+    private volatile static List<Dragon> dragons;
+    private volatile static  LocalDate creationDate;
 
     public static void initCollection() {
         dragons = DatabaseManager.getDragons();
@@ -26,7 +26,7 @@ public final class CollectionManager {
         return (List<Dragon>) stream.collect(Collectors.toList());
     }
 
-    public static boolean addElement(Dragon dragon) {
+    public synchronized static boolean addElement(Dragon dragon) {
         if (DatabaseManager.insertNewDragon(dragon)) {
             dragons.add(dragon);
             dragons.sort(new DragonComparator());
@@ -36,7 +36,7 @@ public final class CollectionManager {
         return false;
 
     }
-    public static boolean removeElement(Dragon dragon) {
+    public synchronized static boolean removeElement(Dragon dragon) {
         if (DatabaseManager.deleteDragon(dragon)) {
             Stream stream = dragons.stream();
             dragons = (ArrayList<Dragon>) stream.filter(x -> !x.equals(dragon)).collect(Collectors.toList());
@@ -47,7 +47,7 @@ public final class CollectionManager {
         return false;
     }
 
-    public static boolean removeElementByindex(int index) {
+    public synchronized static boolean removeElementByindex(int index) {
         Dragon dragon = dragons.get(index);
         if (DatabaseManager.deleteDragon(dragon)) {
             dragons.remove(index);
@@ -56,7 +56,7 @@ public final class CollectionManager {
         }
         return false;
     }
-    public static boolean clear() {
+    public synchronized static boolean clear() {
         if (DatabaseManager.truncateDragons()) {
             Stream<? extends Object> stream = dragons.stream();
             dragons = (ArrayList<Dragon>) stream.skip(dragons.size()).collect(Collectors.toList());
