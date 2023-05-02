@@ -7,10 +7,10 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class DatabaseManager {
     private static Connection connection;
@@ -32,7 +32,7 @@ public final class DatabaseManager {
             Statement statement = connection.createStatement();
             String getClientRows = "SELECT * FROM clients;";
             ResultSet clientRows = statement.executeQuery(getClientRows);
-            Map<String, String> clients = new HashMap<>();
+            ConcurrentHashMap<String, String> clients = new ConcurrentHashMap<>();
             while (clientRows.next()) {
                 clients.put(clientRows.getString("login"), clientRows.getString("password"));
             }
@@ -62,8 +62,8 @@ public final class DatabaseManager {
         }
     }
 
-    public static List<Dragon> getDragons() {
-        List<Dragon> dragons = new ArrayList<>();
+    public static CopyOnWriteArrayList<Dragon> getDragons() {
+        CopyOnWriteArrayList<Dragon> dragons = new CopyOnWriteArrayList<>();
         try {
             String getDragonRows = "SELECT * FROM dragons;";
             Statement statement = connection.createStatement();

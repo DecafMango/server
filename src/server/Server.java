@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +23,7 @@ public class Server {
     private final static String SERVER_HOSTNAME = "localhost";
     private final static int SERVER_PORT = 10000;
     private volatile static DatagramChannel server;
-    private volatile static Map<String, String> clients;
+    private volatile static ConcurrentHashMap<String, String> clients;
     private volatile static ExecutorService requestReceiver;
     private volatile static ExecutorService requestExecutor;
 
@@ -61,7 +62,7 @@ public class Server {
         return clients;
     }
 
-    public static void setClients(Map<String, String> clients) {
+    public static void setClients(ConcurrentHashMap<String, String> clients) {
         Server.clients = clients;
     }
 

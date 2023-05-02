@@ -3,13 +3,12 @@ package dragon;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class DragonParser {
 
-    public static List<Dragon> toListOfDragons(ResultSet dragonRows) {
-        List<Dragon> dragons = new ArrayList<>();
+    public static CopyOnWriteArrayList<Dragon> toListOfDragons(ResultSet dragonRows) {
+        CopyOnWriteArrayList<Dragon> dragons = new CopyOnWriteArrayList<>();
         try {
             while (dragonRows.next()) {
                 int id = dragonRows.getInt("dragon_id");

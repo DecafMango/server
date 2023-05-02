@@ -4,14 +4,11 @@ import dragon.Dragon;
 import server.DatabaseManager;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class CollectionManager {
 
-    private volatile static List<Dragon> dragons;
+    private static CopyOnWriteArrayList<Dragon> dragons;
     private volatile static  LocalDate creationDate;
 
     public static void initCollection() {
@@ -21,12 +18,11 @@ public final class CollectionManager {
     }
 
 
-    public static List<Dragon> getCollection() {
-        Stream<Dragon> stream = dragons.stream();
-        return (List<Dragon>) stream.collect(Collectors.toList());
+    public static CopyOnWriteArrayList<Dragon> getCollection() {
+        return dragons;
     }
 
-    public synchronized static boolean addElement(Dragon dragon) {
+    public static boolean addElement(Dragon dragon) {
         if (DatabaseManager.insertNewDragon(dragon)) {
             dragons.add(dragon);
             dragons.sort(new DragonComparator());
@@ -36,10 +32,9 @@ public final class CollectionManager {
         return false;
 
     }
-    public synchronized static boolean removeElement(Dragon dragon) {
+    public static boolean removeElement(Dragon dragon) {
         if (DatabaseManager.deleteDragon(dragon)) {
-            Stream stream = dragons.stream();
-            dragons = (ArrayList<Dragon>) stream.filter(x -> !x.equals(dragon)).collect(Collectors.toList());
+            dragons.remove(dragon);
             dragons.sort(new DragonComparator());
             System.out.println("Удален дракон. Кол-во драконов: " + dragons.size() + ".");
             return true;
@@ -47,20 +42,11 @@ public final class CollectionManager {
         return false;
     }
 
-    public synchronized static boolean removeElementByindex(int index) {
+    public static boolean removeElementByindex(int index) {
         Dragon dragon = dragons.get(index);
         if (DatabaseManager.deleteDragon(dragon)) {
             dragons.remove(index);
             System.out.println("Удален дракон. Кол-во драконов: " + dragons.size() + ".");
-            return true;
-        }
-        return false;
-    }
-    public synchronized static boolean clear() {
-        if (DatabaseManager.truncateDragons()) {
-            Stream<? extends Object> stream = dragons.stream();
-            dragons = (ArrayList<Dragon>) stream.skip(dragons.size()).collect(Collectors.toList());
-            System.out.println("Коллекция очищена.");
             return true;
         }
         return false;
