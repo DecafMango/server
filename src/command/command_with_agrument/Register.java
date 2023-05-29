@@ -1,8 +1,10 @@
 package command.command_with_agrument;
 
+import command.CommandManager;
 import command.CommandWithArgument;
 import command.Response;
 import server.DatabaseManager;
+import server.Language;
 import server.Server;
 
 import java.util.Set;
@@ -22,12 +24,11 @@ public class Register extends CommandWithArgument {
 
         if (!logins.contains(login)) {
             if (DatabaseManager.insertNewClient(login, password))
-                return new Response("Учетная запись успешно зарегистрирована");
+                return new Response(CommandManager.getCommandMeta(), 0);
             else
-                return new Response("Произошла ошибка при регистрации учетной записи");
+                return new Response(Language.getProperty("server_error", getLanguage()), 1);
         } else
-            return new Response("Учетная запись с таким логином уже существует");
-
+            return new Response(Language.getProperty("exists", getLanguage()), 1);
 
     }
 }

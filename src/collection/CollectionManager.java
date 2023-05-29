@@ -22,6 +22,14 @@ public final class CollectionManager {
         return dragons;
     }
 
+    public static Dragon getDragonById(int id) {
+        for (Dragon dragon : dragons) {
+            if (dragon.getId() == id)
+                return dragon;
+        }
+        return null;
+    }
+
     public static boolean addElement(Dragon dragon) {
         if (DatabaseManager.insertNewDragon(dragon)) {
             dragons.add(dragon);

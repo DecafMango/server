@@ -3,13 +3,17 @@ package command.command_without_argument;
 import command.Command;
 import command.CommandManager;
 import command.Response;
+import command.command_with_agrument.LogIn;
+import command.command_with_agrument.Register;
+import command.command_with_creation.UpdateById;
+import server.Language;
 
 import java.util.Collection;
 
 public final class Help extends Command {
 
     public Help() {
-        super("help", "вывести справку о всех доступных командах.");
+        super("help", "help");
     }
 
     @Override
@@ -18,12 +22,13 @@ public final class Help extends Command {
         StringBuilder sb = new StringBuilder();
         int count = 0;
         for (Command command : commands) {
+            if (command instanceof LogIn || command instanceof Register || command instanceof UpdateById
+            || command instanceof GetCollection)
+                continue;
             count++;
-            sb.append(command.getCommandName() + " : " + command.getCommandDefiniton() + "\n");
-            if (count == commands.size())
-                sb.append("execute_script : выполнить скрипт по указанному файлу");
-
+            sb.append(command.getCommandName() + " : " +
+                    Language.getProperty(command.getCommandDefiniton(), getLanguage()) + "\n");
         }
-        return new Response(sb.toString());
+        return new Response(sb.toString(), 0);
     }
 }

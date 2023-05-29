@@ -22,4 +22,5 @@ public abstract class CommandWithArgument extends Command {
     public int getArgumentType() {
         return argumentType;
     }
+
 }

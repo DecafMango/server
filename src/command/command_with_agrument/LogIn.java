@@ -4,6 +4,7 @@ import command.CommandManager;
 import command.CommandWithArgument;
 import command.Response;
 import server.DatabaseManager;
+import server.Language;
 import server.Server;
 
 import java.util.Map;
@@ -23,8 +24,8 @@ public final class LogIn extends CommandWithArgument {
         String password = DatabaseManager.getMD5(loginAndPassword[1]);
 
         if (clients.containsKey(login) && password.equals(clients.get(login)))
-            return new Response(CommandManager.getCommandMeta());
+            return new Response(CommandManager.getCommandMeta(), 0);
         else
-            return new Response("Неверный логин или пароль");
+            return new Response(Language.getProperty("invalidLoginPassword", getLanguage()), 1);
     }
 }

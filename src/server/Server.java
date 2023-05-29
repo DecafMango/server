@@ -30,16 +30,16 @@ public class Server {
     public static void main(String[] args) {
         new StopServer().start();
         startServer();
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
-        requestReceiver.submit(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
+        requestReceiver.execute(new ReceiveRequest(server));
     }
 
     private static void startServer() {
@@ -91,7 +91,7 @@ class ReceiveRequest extends Thread {
                 buffer.get(serializedСlientRequest);
                 Request request = null;
                 request = (Request) ObjectSerializer.deserializeObject(serializedСlientRequest);
-                Server.getRequestExecutor().submit(new ExecuteRequest(request, clientAddress, server));
+                Server.getRequestExecutor().execute(new ExecuteRequest(request, clientAddress, server));
             } catch (EOFException e) {
 
             } catch (IOException | ClassNotFoundException e) {
@@ -115,7 +115,7 @@ class ExecuteRequest extends Thread {
 
     @Override
     public void run() {
-        Response response = CommandManager.execute(request.getCommandName(), request.getSerializedArgument(), request.getLogin());
+        Response response = CommandManager.execute(request.getCommandName(), request.getSerializedArgument(), request.getLogin(), request.getLanguage());
         new SendResponse(response, clientAddress, server).start();
     }
 }
@@ -140,6 +140,13 @@ class SendResponse extends Thread {
             server.socket().send(datagramPacket);
         } catch (IOException e) {
             System.out.println("Возникла ошибка при отправке ответа");
+            try {
+                byte[] serializedResponse = ObjectSerializer.serializeObject(new Response("Сообщение слишком длинное", 0));
+                DatagramPacket datagramPacket = new DatagramPacket(serializedResponse, serializedResponse.length, clientAddress);
+                server.socket().send(datagramPacket);
+            } catch (IOException u) {
+                System.out.println("Возникла ошибка при отправке ответа");
+            }
         }
     }
 }

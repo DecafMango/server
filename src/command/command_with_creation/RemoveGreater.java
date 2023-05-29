@@ -4,13 +4,14 @@ import collection.CollectionManager;
 import command.Response;
 import command.CommandWithCreation;
 import dragon.Dragon;
+import server.Language;
 
 import java.util.List;
 
 public final class RemoveGreater extends CommandWithCreation {
 
     public RemoveGreater() {
-        super("remove_greater", "удалить из коллекции все элементы, превышающие заданный");
+        super("remove_greater", "remove_greater");
     }
 
     @Override
@@ -25,12 +26,11 @@ public final class RemoveGreater extends CommandWithCreation {
                     if (getLogin().equals(dragon.getOwner()) && CollectionManager.removeElementByindex(j))
                         counter++;
                 }
-                return new Response("Успешно удалено элементов из коллекции: " +
-                        counter);
+                return new Response(Language.getProperty("removeResult", getLanguage()) + ": " +
+                        counter, 0);
             }
         }
-        return new Response("Не было удалено ни одного элемента из коллекции");
-
-
+        return new Response(Language.getProperty("removeResult", getLanguage()) + ": " +
+                counter, 0);
     }
 }

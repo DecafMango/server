@@ -5,6 +5,7 @@ public abstract class Command {
     private String login;
     private String commandName;
     private String commandDefiniton;
+    private String language;
 
     public Command(String commandName, String commandDefiniton) {
         this.commandName = commandName;
@@ -27,5 +28,13 @@ public abstract class Command {
 
     public String getCommandDefiniton() {
         return commandDefiniton;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

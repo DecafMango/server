@@ -4,6 +4,7 @@ import collection.CollectionManager;
 import command.Command;
 import command.Response;
 import dragon.Dragon;
+import server.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +12,14 @@ import java.util.List;
 public final class Clear extends Command {
 
     public Clear() {
-        super("clear", "очистить коллекцию");
+        super("clear", "clear");
     }
     @Override
     public Response execute() {
         List<Dragon> dragons = CollectionManager.getCollection();
         int counter = 0;
         if (dragons.isEmpty()) {
-            return new Response("Коллекция пустая");
+            return new Response(Language.getProperty("isEmpty", getLanguage()), 0);
         } else {
             List<Dragon> toDelete = new ArrayList<>();
             for (Dragon dragon : dragons) {
@@ -30,7 +31,7 @@ public final class Clear extends Command {
                     counter++;
             }
         }
-        return new Response("Было успешно удалено " + counter + " драконов из коллекции");
+        return new Response(Language.getProperty("removeResult", getLanguage()), 0);
 
     }
 }

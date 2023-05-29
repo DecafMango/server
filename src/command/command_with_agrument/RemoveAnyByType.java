@@ -5,13 +5,14 @@ import command.Response;
 import command.CommandWithArgument;
 import dragon.Dragon;
 import dragon.DragonType;
+import server.Language;
 
 import java.util.ArrayList;
 
 public final class RemoveAnyByType extends CommandWithArgument {
 
     public RemoveAnyByType() {
-        super("remove_any_by_type", "удалить из коллекции один элемент, значение поля type которого эквивалентно заданному", 1);
+        super("remove_any_by_type", "remove_any_by_type", 2);
     }
 
     @Override
@@ -23,15 +24,11 @@ public final class RemoveAnyByType extends CommandWithArgument {
             types.add(type.toString());
         }
         if (!types.contains(argument)) {
-            StringBuilder sb = new StringBuilder("Типа " + argument + " не существует " +
-                    "Требуется ввести один из следующего списка:");
-            for (String type : types)
-                sb.append("\n" + type);
-            return new Response(sb.toString());
+            return new Response(Language.getProperty("invalid_type", getLanguage()), 1);
         }
 
         if (CollectionManager.getCollection().isEmpty()) {
-            return new Response("Коллекция пустая");
+            return new Response(Language.getProperty("isEmpty", getLanguage()), 0);
         }
 
         ArrayList<Dragon> toDelete = new ArrayList<>();
@@ -46,6 +43,6 @@ public final class RemoveAnyByType extends CommandWithArgument {
             if (CollectionManager.removeElement(dragon))
                 counter++;
         }
-        return new Response("Было успешно удалено элементов из коллекции: " + counter);
+        return new Response(Language.getProperty("removeResult", getLanguage()) +": " + counter, 0);
     }
 }

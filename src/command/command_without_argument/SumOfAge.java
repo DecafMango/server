@@ -4,11 +4,12 @@ import collection.CollectionManager;
 import command.Command;
 import command.Response;
 import dragon.Dragon;
+import server.Language;
 
 public final class SumOfAge extends Command {
 
     public SumOfAge() {
-        super("sum_of_age", "вывести сумму значений поля age для всех элементов коллекции");
+        super("sum_of_age", "sum_of_age");
     }
 
     @Override
@@ -19,9 +20,9 @@ public final class SumOfAge extends Command {
             for (Dragon dragon : CollectionManager.getCollection()) {
                 sum += dragon.getAge();
             }
-            return new Response("Суммарный возраст всех элементов текущей коллекции составляет: " + sum);
+            return new Response(Language.getProperty("sum_age", getLanguage()) + ": " + sum, 0);
         } else {
-            return new Response("Коллекция пустая");
+            return new Response(Language.getProperty("isEmpty", getLanguage()), 0);
         }
     }
 }
